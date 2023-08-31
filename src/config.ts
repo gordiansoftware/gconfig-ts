@@ -11,9 +11,14 @@ import {
   AWSMissingSessionTokenException,
   RequiredSecretNotFoundException,
 } from './exceptions';
+import { parseEntry } from "./parse";
 
 
-export type GConfigValueType = string | number | boolean;
+export enum ConfigValueType {
+  String="string",
+  Number="number",
+  Boolean="boolean",
+}
 
 export class Config {
   awsPrefix: string;
@@ -159,7 +164,7 @@ export class Config {
   }
 
   async get(
-    typ: GConfigValueType,
+    typ: ConfigValueType,
     env: string = null,
     secretsmanager: string = null,
     _default: any = null,
@@ -210,26 +215,57 @@ export class Config {
     return secret;
   }
 
-  async write(
-    value: string,
+  async string(
     env: string = null,
     secretsmanager: string = null,
-  ) {
-    // TODO: implement.
+    _default: any = null,
+    required: boolean = false,
+    changeCallbackFn: CallableFunction = null,
+  ): Promise<string> {
+    const value = await this.get(
+      ConfigValueType.String,
+      env,
+      secretsmanager,
+      _default,
+      required,
+      changeCallbackFn,
+    );
+    return parseEntry(ConfigValueType.String, value);
   }
 
-  async string(): Promise<string> {
-    // TODO: implement.
-    return "";
+  async number(
+    env: string = null,
+    secretsmanager: string = null,
+    _default: any = null,
+    required: boolean = false,
+    changeCallbackFn: CallableFunction = null,
+  ): Promise<number> {
+    const value = await this.get(
+      ConfigValueType.Number,
+      env,
+      secretsmanager,
+      _default,
+      required,
+      changeCallbackFn,
+    );
+    return parseEntry(ConfigValueType.Number, value);
   }
 
-  async number(): Promise<number> {
-    // TODO: implement.
-    return 0;
-  }
-
-  async boolean(): Promise<boolean> {
-    // TODO: implement.
-    return false;
+  async boolean(
+    env: string = null,
+    secretsmanager: string = null,
+    _default: any = null,
+    required: boolean = false,
+    changeCallbackFn: CallableFunction = null,
+  ): Promise<boolean> {
+    const value = await this.get(
+      ConfigValueType.Boolean,
+      env,
+      secretsmanager,
+      _default,
+      required,
+      changeCallbackFn,
+    );
+    return parseEntry(ConfigValueType.Boolean, value);
   }
 }
