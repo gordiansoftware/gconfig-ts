@@ -29,9 +29,15 @@ export class Config {
   cacheSecretsmanager: GCache;
 
   constructor(
-    awsPrefix: string = "",
-    secretsmanagerPrefix: string = "",
-    notFoundFn: CallableFunction = null,
+    {
+      awsPrefix = "",
+      secretsmanagerPrefix = "",
+      notFoundFn = null,
+    }: {
+      awsPrefix: string,
+      secretsmanagerPrefix: string,
+      notFoundFn: CallableFunction,
+    }
   ) {
     this.awsPrefix = awsPrefix;
     this.secretsmanagerPrefix = secretsmanagerPrefix;
@@ -216,11 +222,19 @@ export class Config {
   }
 
   async string(
-    env: string = null,
-    secretsmanager: string = null,
-    _default: any = null,
-    required: boolean = false,
-    changeCallbackFn: CallableFunction = null,
+    {
+      env = null,
+      secretsmanager = null,
+      _default = null,
+      required = false,
+      changeCallbackFn = null,
+    }: {
+      env?: string,
+      secretsmanager?: string,
+      _default?: any,
+      required?: boolean,
+      changeCallbackFn?: CallableFunction,
+    }
   ): Promise<string> {
     const value = await this.get(
       ConfigValueType.String,
@@ -234,11 +248,19 @@ export class Config {
   }
 
   async number(
-    env: string = null,
-    secretsmanager: string = null,
-    _default: any = null,
-    required: boolean = false,
-    changeCallbackFn: CallableFunction = null,
+    {
+      env = null,
+      secretsmanager = null,
+      _default = null,
+      required = false,
+      changeCallbackFn = null,
+    }: {
+      env?: string,
+      secretsmanager?: string,
+      _default?: any,
+      required?: boolean,
+      changeCallbackFn?: CallableFunction,
+    }
   ): Promise<number> {
     const value = await this.get(
       ConfigValueType.Number,
@@ -252,11 +274,19 @@ export class Config {
   }
 
   async boolean(
-    env: string = null,
-    secretsmanager: string = null,
-    _default: any = null,
-    required: boolean = false,
-    changeCallbackFn: CallableFunction = null,
+    {
+      env = null,
+      secretsmanager = null,
+      _default = null,
+      required = false,
+      changeCallbackFn = null,
+    }: {
+      env?: string,
+      secretsmanager?: string,
+      _default?: any,
+      required?: boolean,
+      changeCallbackFn?: CallableFunction,
+    }
   ): Promise<boolean> {
     const value = await this.get(
       ConfigValueType.Boolean,

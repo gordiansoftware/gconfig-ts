@@ -1,11 +1,17 @@
 {
   "compilerOptions": {
+    "outDir": "./dist",
+    "target": "esnext",
     "module": "commonjs",
-    "target": "es2015",
     "declaration": true,
-    "outDir": "./dist"
+    "sourceMap": true,
   },
   "include": [
     "src/**/*"
-  ]
+  ],
+  "ts-node": {
+    "experimentalSpecifierResolution": "node",
+    "transpileOnly": true,
+    "esm": true,
+  }
 }
