@@ -1,5 +1,5 @@
 {
-  "name": "gconfigts",
+  "name": "gconfig",
   "version": "0.1.0",
   "description": "",
   "main": "dist/index.js",
@@ -12,7 +12,7 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc --declaration",
+    "compile": "tsc --declaration",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

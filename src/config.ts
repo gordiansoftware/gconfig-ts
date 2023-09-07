@@ -1,7 +1,7 @@
 import { AssumeRoleCommand, STSClient } from "@aws-sdk/client-sts";
 import { SecretsManager } from "@aws-sdk/client-secrets-manager";
 
-import { GCache, GCacheEntry } from "./cache";
+import { GCache, GCacheEntry } from "./cache.js";
 import {
   AWSMissingAccessKeyIdException,
   AWSMissingRegionException,
@@ -10,8 +10,8 @@ import {
   AWSMissingSecretAccessKeyException,
   AWSMissingSessionTokenException,
   RequiredSecretNotFoundException,
-} from './exceptions';
-import { parseEntry } from "./parse";
+} from './exceptions.js';
+import { parseEntry } from "./parse.js";
 
 
 export enum ConfigValueType {
@@ -175,15 +175,14 @@ export class Config {
     secretsmanager: string = null,
     _default: any = null,
     required: boolean = false,
-    changeCallbackFn: CallableFunction = null,
   ): Promise<string> {
     let secret = null;
 
     if (env != null) {
-      secret = process.env[`${this.awsPrefix}${env}`];
+      secret = process.env[env];
       if (secret != null) {
         this.cacheEnv.set(
-          new GCacheEntry(typ, env, secret as string, changeCallbackFn)
+          new GCacheEntry(typ, env, secret)
         )
       }
     }
@@ -192,7 +191,7 @@ export class Config {
       try {
         secret = await this.getSecretsmanagerSecret(secretsmanager);
         this.cacheSecretsmanager.set(
-          new GCacheEntry(typ, secretsmanager, secret, changeCallbackFn)
+          new GCacheEntry(typ, secretsmanager, secret)
         );
       } catch (err) {
         if (err.name == "ResourceNotFoundException") {
@@ -227,13 +226,11 @@ export class Config {
       secretsmanager = null,
       _default = null,
       required = false,
-      changeCallbackFn = null,
     }: {
       env?: string,
       secretsmanager?: string,
-      _default?: any,
+      _default?: string,
       required?: boolean,
-      changeCallbackFn?: CallableFunction,
     }
   ): Promise<string> {
     const value = await this.get(
@@ -242,7 +239,6 @@ export class Config {
       secretsmanager,
       _default,
       required,
-      changeCallbackFn,
     );
     return parseEntry(ConfigValueType.String, value);
   }
@@ -253,13 +249,11 @@ export class Config {
       secretsmanager = null,
       _default = null,
       required = false,
-      changeCallbackFn = null,
     }: {
       env?: string,
       secretsmanager?: string,
-      _default?: any,
+      _default?: number,
       required?: boolean,
-      changeCallbackFn?: CallableFunction,
     }
   ): Promise<number> {
     const value = await this.get(
@@ -268,7 +262,6 @@ export class Config {
       secretsmanager,
       _default,
       required,
-      changeCallbackFn,
     );
     return parseEntry(ConfigValueType.Number, value);
   }
@@ -279,13 +272,11 @@ export class Config {
       secretsmanager = null,
       _default = null,
       required = false,
-      changeCallbackFn = null,
     }: {
       env?: string,
       secretsmanager?: string,
-      _default?: any,
+      _default?: boolean,
       required?: boolean,
-      changeCallbackFn?: CallableFunction,
     }
   ): Promise<boolean> {
     const value = await this.get(
@@ -294,7 +285,6 @@ export class Config {
       secretsmanager,
       _default,
       required,
-      changeCallbackFn,
     );
     return parseEntry(ConfigValueType.Boolean, value);
   }

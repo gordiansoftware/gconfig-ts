@@ -1,16 +1,14 @@
-import { ConfigValueType } from "./config";
+import { ConfigValueType } from "./config.js";
 
 export class GCacheEntry {
   typ: ConfigValueType;
   key: string;
   value: any;
-  changeCallbackFn: CallableFunction;
 
-  constructor(typ: ConfigValueType, key: string, value: any, changeCallbackFn: CallableFunction) {
+  constructor(typ: ConfigValueType, key: string, value: any) {
     this.typ = typ;
     this.key = key;
     this.value = value;
-    this.changeCallbackFn = changeCallbackFn;
   }
 }
 
