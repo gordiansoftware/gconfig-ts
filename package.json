@@ -1,6 +1,6 @@
 {
   "name": "gconfig",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "dist/index.js",
   "type": "module",
@@ -12,7 +12,7 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "compile": "tsc --declaration",
+    "build": "tsc --declaration",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
