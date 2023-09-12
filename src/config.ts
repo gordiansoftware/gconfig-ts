@@ -1,7 +1,7 @@
 import { AssumeRoleCommand, STSClient } from "@aws-sdk/client-sts";
 import { SecretsManager } from "@aws-sdk/client-secrets-manager";
 
-import { GCache, GCacheEntry } from "./cache.js";
+import { GCache, GCacheEntry } from "./cache";
 import {
   AWSMissingAccessKeyIdException,
   AWSMissingRegionException,
@@ -10,8 +10,8 @@ import {
   AWSMissingSecretAccessKeyException,
   AWSMissingSessionTokenException,
   RequiredSecretNotFoundException,
-} from './exceptions.js';
-import { parseEntry } from "./parse.js";
+} from './exceptions';
+import { parseEntry } from "./parse";
 
 
 export enum ConfigValueType {

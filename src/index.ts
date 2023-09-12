@@ -1,3 +1,3 @@
-export * from "./config.js";
-export * from "./exceptions.js";
-export * from "./cache.js";
+export * from "./config";
+export * from "./exceptions";
+export * from "./cache";

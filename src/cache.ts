@@ -1,4 +1,4 @@
-import { ConfigValueType } from "./config.js";
+import { ConfigValueType } from "./config";
 
 export class GCacheEntry {
   typ: ConfigValueType;
