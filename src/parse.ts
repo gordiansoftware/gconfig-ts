@@ -1,4 +1,4 @@
-import { ConfigValueType } from "./config.js";
+import { ConfigValueType } from "./config";
 
 export function parseEntry(typ: ConfigValueType, val: any): any {
   if (typ == ConfigValueType.String) {
