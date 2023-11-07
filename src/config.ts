@@ -13,6 +13,7 @@ import {
   RequiredSecretNotFoundException,
 } from "./exceptions";
 import { parseEntry } from "./parse";
+import { isRunningOnAWS } from "./utils/aws";
 
 const log = debug("gconfig:config");
 
@@ -75,6 +76,7 @@ export class Config {
         config[key] = v;
       }
     }
+
     log("config: %O", config);
     return config;
   }
@@ -83,6 +85,11 @@ export class Config {
     log("getting secretsmanager client");
     const cfg = this.getEnvConfig();
     if (this.secretsmanagerClient == null) {
+      if (isRunningOnAWS()) {
+        this.secretsmanagerClient = new SecretsManager();
+        return this.secretsmanagerClient;
+      }
+
       if (cfg.awsAccessKeyId == null) {
         throw new AWSMissingAccessKeyIdException();
       }
