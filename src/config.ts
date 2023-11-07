@@ -39,6 +39,7 @@ export class Config {
   notFoundFn: CallableFunction | null;
   cacheEnv: GCache;
   cacheSecretsmanager: GCache;
+  cfg: EnvConfig;
 
   constructor({
     awsPrefix = "",
@@ -55,6 +56,7 @@ export class Config {
     this.notFoundFn = notFoundFn;
     this.cacheEnv = new GCache();
     this.cacheSecretsmanager = new GCache();
+    this.cfg = this.getEnvConfig();
     log("%O", this);
   }
 
@@ -82,71 +84,71 @@ export class Config {
   }
 
   async getSecretsmanager(): Promise<SecretsManager> {
-    log("getting secretsmanager client");
-    const cfg = this.getEnvConfig();
-    if (this.secretsmanagerClient == null) {
+    if (!this.secretsmanagerClient) {
       if (isRunningOnAWS()) {
+        log("setting up secretsmanager client (in AWS)");
         this.secretsmanagerClient = new SecretsManager();
         return this.secretsmanagerClient;
       }
 
-      if (cfg.awsAccessKeyId == null) {
+      if (this.cfg.awsAccessKeyId == null) {
         throw new AWSMissingAccessKeyIdException();
       }
 
-      if (cfg.awsSecretAccessKey == null) {
+      if (this.cfg.awsSecretAccessKey == null) {
         throw new AWSMissingSecretAccessKeyException();
       }
 
-      if (cfg.awsRegion == null) {
+      if (this.cfg.awsRegion == null) {
         throw new AWSMissingRegionException();
       }
 
       //  If AWS_SESSION_TOKEN is not provided, assume role.
-      if (cfg.awsSessionToken == null) {
-        if (cfg.awsRoleArn == null) {
+      if (this.cfg.awsSessionToken == null) {
+        if (this.cfg.awsRoleArn == null) {
           throw new AWSMissingRoleARNException();
         }
 
-        if (cfg.awsRoleSessionName == null) {
+        if (this.cfg.awsRoleSessionName == null) {
           throw new AWSMissingRoleSessionNameException();
         }
 
         try {
           const client = new STSClient({
             credentials: {
-              accessKeyId: cfg.awsAccessKeyId,
-              secretAccessKey: cfg.awsSecretAccessKey,
+              accessKeyId: this.cfg.awsAccessKeyId,
+              secretAccessKey: this.cfg.awsSecretAccessKey,
             },
-            region: cfg.awsRegion,
+            region: this.cfg.awsRegion,
           });
 
           const command = new AssumeRoleCommand({
-            RoleArn: cfg.awsRoleArn,
-            RoleSessionName: cfg.awsRoleSessionName,
+            RoleArn: this.cfg.awsRoleArn,
+            RoleSessionName: this.cfg.awsRoleSessionName,
           });
           const response = await client.send(command);
 
-          cfg.awsAccessKeyId = response.Credentials?.AccessKeyId;
-          cfg.awsSecretAccessKey = response.Credentials?.SecretAccessKey;
-          cfg.awsSessionToken = response.Credentials?.SessionToken;
+          this.cfg.awsAccessKeyId = response.Credentials?.AccessKeyId;
+          this.cfg.awsSecretAccessKey = response.Credentials?.SecretAccessKey;
+          this.cfg.awsSessionToken = response.Credentials?.SessionToken;
         } catch (err) {
           throw err;
         }
       }
 
       // session token must be set now.
-      if (cfg.awsSessionToken == null) {
+      if (this.cfg.awsSessionToken == null) {
         throw new AWSMissingSessionTokenException();
       }
 
+      log("setting up secretsmanager client (not in AWS)");
       this.secretsmanagerClient = new SecretsManager({
         credentials: {
-          accessKeyId: cfg.awsAccessKeyId,
-          secretAccessKey: cfg.awsSecretAccessKey,
-          sessionToken: cfg.awsSessionToken,
+          accessKeyId: this.cfg.awsAccessKeyId,
+          secretAccessKey: this.cfg.awsSecretAccessKey,
+          sessionToken: this.cfg.awsSessionToken,
         },
-        region: cfg.awsRegion,
+        region: this.cfg.awsRegion,
       });
     }
 
@@ -168,6 +170,7 @@ export class Config {
       const response = await secretsmanagerClient.getSecretValue({
         SecretId: secretKey,
       });
+      log("%s was found in secretsmanager", secretKey);
       return response.SecretString;
     } catch (err) {
       throw err;
@@ -216,7 +219,6 @@ export class Config {
     required: boolean = false
   ): Promise<string> {
     let secret = null;
-    log("trying to get config: %s, %s, %s", typ, env, secretsmanager);
 
     if (env != null) {
       secret = process.env[env];
