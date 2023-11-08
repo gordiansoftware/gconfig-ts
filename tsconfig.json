@@ -7,12 +7,10 @@
     "sourceMap": true,
     "moduleResolution": "NodeNext"
   },
-  "include": [
-    "src/**/*"
-  ],
+  "include": ["src/**/*"],
   "ts-node": {
     "experimentalSpecifierResolution": "node",
     "transpileOnly": true,
-    "esm": true,
+    "esm": true
   }
 }

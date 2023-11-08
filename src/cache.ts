@@ -13,7 +13,7 @@ export class GCacheEntry {
 }
 
 export class GCache {
-  cache: {[key: string]: GCacheEntry};
+  cache: { [key: string]: GCacheEntry };
 
   constructor() {
     this.cache = {};
