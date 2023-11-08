@@ -57,7 +57,6 @@ export class Config {
     this.cacheEnv = new GCache();
     this.cacheSecretsmanager = new GCache();
     this.cfg = this.getEnvConfig();
-    log("%O", this);
   }
 
   getEnvConfig(): EnvConfig {
@@ -79,7 +78,6 @@ export class Config {
       }
     }
 
-    log("config: %O", config);
     return config;
   }
 
