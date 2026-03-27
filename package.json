@@ -1,6 +1,6 @@
 {
   "name": "gconfig",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,8 +26,8 @@
   },
   "homepage": "https://github.com/gordiansoftware/gconfig-ts#readme",
   "dependencies": {
-    "@aws-sdk/client-secrets-manager": "^3.398.0",
-    "@aws-sdk/client-sts": "^3.398.0",
+    "@aws-sdk/client-secrets-manager": "^3.1017.0",
+    "@aws-sdk/client-sts": "^3.1017.0",
     "debug": "^4.3.4"
   },
   "devDependencies": {
